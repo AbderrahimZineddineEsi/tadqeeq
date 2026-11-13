@@ -1,0 +1,29 @@
+/archive/
+.venv/
+__pycache__/
+*.pyc
+*.jsonl
+# golden files are kept on purpose (engine/golden/make_golden.mjs)
+!engine/golden/**/*.jsonl
+.DS_Store
+
+# 90 MB corpus, fetched by run.sh from the Wahy-Finder repo
+data/corpus.json
+data/corpora/
+
+# Local outputs: browser-test screenshots, downloaded media, run reports
+.playwright-mcp/
+data/media_cache/
+/runs/
+
+# secrets and generated datasets
+.env
+data/laya_datagen/
+
+# rewrite: node and python tooling, experiment output (moved to data/tafrigh_runs/)
+node_modules/
+web/dist/
+/data/*
+!/data/.gitkeep
+web/test-results/
+web/playwright-report/
