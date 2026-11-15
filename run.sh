@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
 # =============================================================================
 # Tadqeeq: start the app with one command (Linux, macOS, Windows through WSL).
-# The same launcher serves both editions (docs/editions.md): this repo is the studio edition (with the research),
-# the exported product (an EDITION file says "tadqeeq") is the one people download.
+# It starts the product (the tadqeeq edition). The studio edition, with the research screens (training data,
+# request log, local Laya), starts with WAHY_EDITION=studio (docs/editions.md).
 #
 #   ./run.sh                              installs what it needs the first time, then opens http://127.0.0.1:8000
 #   PORT=9000 ./run.sh                    use another port
 #   HOST=0.0.0.0 ./run.sh                 let other devices on your network open it
 #   WAHY_EXTRAS="local-asr" ./run.sh      also install local Whisper (transcription on your own NVIDIA GPU, no key)
-#   WAHY_EXTRAS="local-asr laya" ./run.sh studio: also local Laya (torch)
-#   WAHY_EDITION=tadqeeq ./run.sh         studio: preview the product
+#   WAHY_EDITION=studio ./run.sh          the studio edition (for development and Laya research)
+#   WAHY_EDITION=studio WAHY_EXTRAS="local-asr laya" ./run.sh   the studio with local Laya (torch)
 #   NO_BROWSER=1 ./run.sh                 do not open the browser
 #
 # Needs: Node.js 22.18+ (the engine worker is TypeScript that node runs directly), uv (offered if missing),
@@ -21,8 +21,11 @@ cd "$(dirname "${BASH_SOURCE[0]}")"
 PORT="${PORT:-8000}"
 HOST="${HOST:-127.0.0.1}"
 URL="http://127.0.0.1:$PORT"
+# the product unless asked for the studio (an EDITION file, written by the product export, also names it)
+WAHY_EDITION="${WAHY_EDITION:-$(cat EDITION 2>/dev/null || echo tadqeeq)}"
+export WAHY_EDITION
 NAME="Tadqeeq"
-[ "${WAHY_EDITION:-$(cat EDITION 2>/dev/null || true)}" = "tadqeeq" ] || NAME="Tadqeeq (studio edition)"
+if [ "$WAHY_EDITION" = "studio" ]; then NAME="Tadqeeq (studio edition)"; fi
 
 say()  { printf '\033[1m%s\033[0m\n' "$*"; }
 fail() { printf '\n\033[31m[!] %s\033[0m\n' "$*" >&2; exit 1; }
